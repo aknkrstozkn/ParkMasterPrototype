@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class TriggerControl : MonoBehaviour
 {
@@ -9,9 +10,21 @@ public class TriggerControl : MonoBehaviour
 
     private void OnTriggerEnter(Collider other) 
     {
+        //var carMovement = car.GetComponent<CarMovement>();
+        //carMovement.Crash(transform.position);
+        
         if(other.gameObject == car)
-        {
-            car.GetComponent<CarMovement>().Move(transform.position);
+        {     
+            var carMovement = car.GetComponent<CarMovement>();
+            if(!carMovement.IsCrashed())
+            {                
+                Vector3[] points = new Vector3[]{carMovement.waypoints[carMovement.waypoints.Count - 1], transform.position};
+                carMovement.StopMoving();
+                carMovement.FollowPath(points);
+                
+                GameManager.parkedCount++;
+            }
         }
+        
     }
 }

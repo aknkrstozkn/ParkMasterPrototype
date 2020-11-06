@@ -5,17 +5,24 @@ using DG.Tweening;
 
 public class CarMovement : MonoBehaviour
 {
-    [SerializeField] float speed = 0.1f;
+    [SerializeField] float speed = 0.2f;
+    public List<Vector3> waypoints;
+    
     private Quaternion _startRotation;
     private Vector3 _startPosition;
+    private Rigidbody rigidBody;
 
     private void Awake() {
         _startRotation = transform.rotation;
         _startPosition = transform.position;
+
+        rigidBody = GetComponent<Rigidbody>();
+        rigidBody.isKinematic = true;
     }
 
     public void FollowPath(Vector3[] waypoints)
-    {
+    {   
+        this.waypoints = new List<Vector3>(waypoints);
         float duration = waypoints.Length * speed;
         transform.DOPath(waypoints, duration).SetLookAt(0.01f);
     }
@@ -23,6 +30,21 @@ public class CarMovement : MonoBehaviour
     public void Move(Vector3 point)
     {
         transform.DOMove(point, speed);
+    }
+
+    public void Crash(Vector3 crashPoint)
+    {   
+        var dir = (transform.position - crashPoint);
+        dir.Normalize();
+        rigidBody.isKinematic = false;
+        rigidBody.AddTorque(-dir * 1000f);
+        StopMoving();
+    }
+
+    public bool IsCrashed()
+    {
+        // Before any crash, cars rigid bodies are setted off
+        return GetComponent<Rigidbody>().isKinematic;
     }
 
     public void Restart()
