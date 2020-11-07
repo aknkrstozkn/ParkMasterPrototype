@@ -8,6 +8,9 @@ TagManager:
   - StartArea
   - SecondPoint
   - FirstPoint
+  - Car
+  - StartPoint
+  - Obstacle
   layers:
   - Default
   - TransparentFX

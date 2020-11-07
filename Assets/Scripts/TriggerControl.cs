@@ -17,12 +17,14 @@ public class TriggerControl : MonoBehaviour
         {     
             var carMovement = car.GetComponent<CarMovement>();
             if(!carMovement.IsCrashed())
-            {                
-                Vector3[] points = new Vector3[]{carMovement.waypoints[carMovement.waypoints.Count - 1], transform.position};
+            {               
                 carMovement.StopMoving();
-                carMovement.FollowPath(points);
-                
-                GameManager.parkedCount++;
+
+                var waypoints = new List<Vector3>{carMovement.waypoints[carMovement.waypoints.Count - 1], transform.position};
+                carMovement.waypoints = waypoints;
+                carMovement.FollowPath();
+
+                GameManager._instance.parkedCount++;
             }
         }
         
